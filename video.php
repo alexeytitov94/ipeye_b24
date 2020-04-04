@@ -12,16 +12,14 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
     <link rel="stylesheet" href="assets/style.css">
     <style>
-
         @font-face {
             font-family: google_font;
             src: url(assets/fonts_google/GoogleSans.ttf);
         }
 
-        html, body {
+        body {
             font-family: google_font;
             color: #1D1D1E;
-            background: #fff;
             overflow-x: hidden;
         }
 
@@ -35,19 +33,83 @@
         }
 
         .custom-btn {
-            background: #FDB33D;
-            box-shadow: 0px 3px 6px rgba(145, 145, 145, 0.47);
+            background: rgb(59, 200, 245);
+            box-shadow: 0px 3px 6px rgba(145, 145, 145, 0.29);
             border-radius: 2px;
             color: #fff;
-            border: navajowhite;
-            padding: 10px 35px;
+            border: rgb(59, 200, 245);
+            padding: 12px 35px;
             font-size: 18px;
+            white-space: nowrap;
+            transition: all .3s;
+        }
+
+        .custom-btn:hover {
+            background: rgb(70, 207, 251);
         }
 
         .table thead th {
             border-bottom: 0;
             background: #e6e6e647;
             border-top: 0;
+        }
+
+        .active-modal-container {
+            filter: blur(4px);
+        }
+
+        .custom-modal-ipeye {
+            max-width: 400px!important;
+        }
+
+        .md-overlay {
+            background: rgba(228, 228, 228, 0.24);
+        }
+
+        .preview_image {
+            background: #fff;
+            background-size: cover;
+            width: 100px;
+            height: 80px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+        }
+
+        .table td, .table th {
+            border-top: 0px;
+        }
+
+        table .title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        table .date {
+            font-size: 16px;
+            color: #a2a2a2;
+            font-weight: 400;
+        }
+
+        table .icon_cameras {
+            position: relative;
+            width: 25px;
+            cursor: pointer;
+        }
+
+        .archiver {
+            position: absolute;
+            top: -10px;
+            left: -14px;
+            background: #0088e6;
+            color: #fff;
+            padding: 1px 7px;
+            border-radius: 3px;
+            font-weight: 400;
+            -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
         }
 
         .active-modal-container {
@@ -83,50 +145,86 @@
             padding: 0px 30px 30px;
         }
 
+        tbody tr {
+            transition: all .3s;
+        }
+
+        tbody tr:hover {
+            cursor: pointer;
+            background: #f9f9f9db;
+            border-radius: 7px;
+        }
+
+        .select_cameras {
+            box-shadow: 0px 3px 6px rgba(145, 145, 145, 0.29);
+            border-radius: 2px;
+            padding: 10px 35px;
+            font-size: 18px;
+            border: none;
+            background: #efefef96;
+        }
+
+        .custom-modal-ipeye-error {
+
+        }
     </style>
+
 </head>
 <body>
-
-
     <div id="app">
-
-        <div class="container mt-5" :class="[{'active-modal-container':modalCamera}, {'active-modal-container':question}]">
+        <div class="container" :class="[{'active-modal-container':question, 'active-modal-container':error}]">
             <div class="row d-flex flex-column bd-highlight">
 
                 <div class="row bd-highlight">
+                    <!-- HEADER -->
+                    <div class="col-sm-12  mt-4 mb-4 d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center align-items-center">
+<!--                            <md-field class="mr-3" v-if="record">-->
+<!--                                <label for="camera">Выберите камеру</label>-->
+<!--                                <md-select v-model="camera" name="camera" id="camera">-->
+<!--                                    <md-option  v-for="(item, index) in cameras" :value="index">{{item.nameCamera}}</md-option>-->
+<!--                                </md-select>-->
+<!--                            </md-field>-->
 
-                    <!-- BTN -->
-                    <div class="col-sm-12 d-flex justify-content-between mb-4">
-                        <button class="custom-btn" @click="modalCamera = true">Добавить камеру</button>
-                        <button class="custom-btn" @click="question = true">Задать вопрос</button>
+                            <select v-model="camera" name="camera" id="camera" class="mr-3 select_cameras"  v-if="record">
+                                <option value="">Выберите камеру</option>
+                                <option v-for="(item, index) in cameras" :value="index">{{item.nameCamera}}</option>
+                            </select>
+                            <button class="custom-btn" @click="startRecord" v-if="record">Начать запись</button>
+                            <button class="custom-btn" @click="endRecord" v-if="!record">Закончить запись</button>
+                        </div>
+    <!--                    <button class="custom-btn" @click="question = true">Задать вопрос</button>-->
                     </div>
-                    <!-- ./BTN-->
+                    <!-- ./HEADER -->
 
                     <!-- TABLE -->
                     <div class="col-sm-12 mb-5">
-                        <table class="table table-cameras" v-if="cameras">
-                            <thead>
-                            <tr>
-                                <th scope="col">Название камеры</th>
-                                <th scope="col">ID камеры</th>
-                                <th scope="col"></th>
+
+                        <table class="table table-cameras" v-if="!recodrs_no">
+                            <tr class="d-flex justify-content-between" v-for="record in records">
+                                <th>
+                                    <div class="d-flex position-relative">
+                                        <div class="archiver" v-if="record.archive == 'Y'">Архив</div>
+                                        <div class="preview_image" :style="{ backgroundImage: 'url(data:image/jpeg;base64,' + record.preview + ')' }"></div>
+                                        <div class="d-flex flex-column justify-content-center ml-3">
+                                            <span class="title">{{record.camera_name}}</span>
+                                            <span class="date mt-1">{{record.date_start}}</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="d-flex justify-content-center align-items-center">
+                                    <a :href="record.url_show" target="_blank" method="post"><img src="assets/play.svg" class="icon_cameras"></a>
+                                    <a :href="record.link_video" target="_blank"><img src="assets/download.svg" class="icon_cameras ml-5"></a>
+                                    <img src="assets/delete.svg" alt="" class="icon_cameras ml-5" @click="deleteRecord(record.id)">
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="(camera, index) in cameras">
-                                <th scope="row">{{camera.nameCamera}}</th>
-                                <td>{{camera.idCamera}}</td>
-                                <td><img class="img img-delete" src="assets/delete.svg" @click="deleteCamera(index)"></td>
-                            </tr>
-                            </tbody>
                         </table>
-                        <h1 class="text-center" v-if="!cameras || cameras == 'new'">У Вас нет ниодной камеры</h1>
+                        <h1 class="text-center" v-if="recodrs_no">Нет записей</h1>
                     </div>
                     <!-- ./TABLE-->
-
                 </div>
 
-                <div class="row bd-highlight mt-auto">
+                <div class="row bd-highlight mt-auto mb-4">
                     <!-- FOOTER -->
                     <div class="col-sm-12 mb-2 footer">
                         <ul class="d-flex justify-content-center align-items-center">
@@ -157,9 +255,9 @@
 
                     <!-- QUESTION -->
                     <div class="col-sm-12 text-center">
-                        <span>
-                            У Вас есть предложения по доработкам? <a href="#" @click="question = true"><b>Напишите нам</b></a> и мы их обязательно реализуем.
-                        </span>
+                    <span>
+                        У Вас есть предложения по доработкам? <a href="#" @click="question = true"><b>Напишите нам</b></a> и мы их обязательно реализуем.
+                    </span>
                     </div>
                     <!-- ./QUESTION -->
                 </div>
@@ -167,33 +265,10 @@
             </div>
         </div>
 
-
-        <!-- MODAL-ADD-CAMERA -->
-        <md-dialog :md-active.sync="modalCamera">
-            <div class="container custom-modal-ipeye">
-                <div class="row">
-<!--                    <button class="icon-close" @click="modalCamera = false">x</button>-->
-                    <header>
-                        <h3>Добавление камеры</h3>
-                    </header>
-                    <section>
-                        <input type="text" v-model="nameCamera" placeholder="Название камеры">
-                        <input type="text" v-model="idCamera" placeholder="ID камеры">
-                        <footer class="d-flex justify-content-center mb-3">
-                            <button class="custom-btn"  @click="addNewCamera()">Добавить камеру</button>
-                        </footer>
-                        <p class="text-center">Незнаете как добавить камеру?  <b><a href="https://ru.vuejs.org/v2/guide/components-edge-cases.html"> Посмотрите видео </a></b> инструкцию.</p>
-                    </section>
-                </div>
-            </div>
-        </md-dialog>
-        <!-- ./MODAL-ADD-CAMERA-->
-
         <!-- MODAL-QUESTIONS -->
         <md-dialog :md-active.sync="question">
             <div class="container custom-modal-ipeye">
                 <div class="row">
-<!--                    <button class="icon-close" @click="question = false">x</button>-->
                     <header>
                         <h3>Задать вопрос</h3>
                     </header>
@@ -211,8 +286,19 @@
         </md-dialog>
         <!-- ./MODAL-QUESTIONS-->
 
-    </div>
+<!--         MODAL-ERROR -->
+<!--        <md-dialog :md-active.sync="error">-->
+<!--            <div class="container custom-modal-ipeye custom-modal-ipeye-error">-->
+<!--                <div class="row">-->
+<!--                    <header>-->
+<!--                        <h3>Для продолжения Вам необходимо включить запись CRM в личном кабинете</h3>-->
+<!--                    </header>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </md-dialog>-->
+<!--         ./MODAL-ERROR-->
 
+    </div>
 
     <script src="//api.bitrix24.com/api/v1/"></script>
     <script rel="stylesheet" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -221,19 +307,20 @@
     <script src="https://unpkg.com/vue-material"></script>
     <script>
 
-        var portal = '<?=$_REQUEST['DOMAIN']?>';
-
         Vue.use(VueMaterial.default);
+
+        var portal = '<?=$_REQUEST['DOMAIN']?>';
 
         var app = new Vue({
             el: '#app',
             data: {
-                new_portal: '',
-                modalCamera: false,
+                error: false,
+                record: true,
+                records: [],
+                recodrs_no: false,
                 question: false,
+                camera: '',
                 cameras: [],
-                nameCamera: '',
-                idCamera: '',
                 question_form: {
                     name: '',
                     email: '',
@@ -242,61 +329,147 @@
                 }
             },
             methods: {
-                addNewCamera() {
-
-                  var ctx = this;
-                  ctx.cameras = ctx.cameras || [];
-
-                  ctx.cameras.push({
-                      nameCamera: ctx.nameCamera,
-                      idCamera: ctx.idCamera
-                  });
-                  ctx.modalCamera = false;
-                  ctx.updateCamera()
-                },
-                updateCamera() {
-
-                  var ctx = this;
-
-                  const data = new FormData();
-                  data.append('cameras', JSON.stringify(ctx.cameras));
-                  data.append('portal', portal);
-
-
-                  axios({
-                      url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/addCameras.php',
-                      method: 'POST',
-                      data: data
-                  }).then((response) => {
-                      ctx.nameCamera = '';
-                      ctx.idCamera = '';
-                  });
-
-                  setTimeout(function () {
-                      ctx.fuckingSizeWindow()
-                  }, 150)
-
-                },
-                deleteCamera(index) {
-                  this.cameras.splice(index, 1);
-                  this.updateCamera()
-                },
                 sendQuestion() {
-                  var ctx = this;
-                  ctx.question = false;
 
-                  const data = new FormData();
-                  data.append('data', JSON.stringify(this.question_form));
-                  data.append('type', 'request');
-                  data.append('portal', portal);
+                    var ctx = this;
+                    ctx.question = false;
+
+                    const data = new FormData();
+                    data.append('data', JSON.stringify(this.question_form));
+                    data.append('type', 'request');
+                    data.append('portal', portal);
 
 
-                  axios({
-                      url: 'https://b24apps.ru/local/b24apps/our_app/scripts_for_all_apps/workPortal/lead.php',
-                      method: 'POST',
-                      data: data
-                  }).then((response) => {});
-              },
+                    axios({
+                        url: 'https://b24apps.ru/local/b24apps/our_app/scripts_for_all_apps/workPortal/lead.php',
+                        method: 'POST',
+                        data: data
+                    }).then((response) => {});
+
+                },
+                startRecord() {
+
+
+                    var url = 'https://ipeye.ru/ipeye_service/model_proc/proc_get_device_tariff.php?devcode='+ this.cameras[this.camera].idCamera +'';
+
+                    axios({
+                        url: url,
+                        method: 'POST',
+                    }).then((response) => {
+
+                        response.data = 17;
+
+                        if(response.data != 17) {
+                            alert('Для продолжения Вам необходимо включить запись CRM в личном кабинете');
+                        } else {
+                            const data = new FormData();
+                            data.append('portal', portal);
+                            data.append('camera_id', this.cameras[this.camera].idCamera);
+                            data.append('camera_name', this.cameras[this.camera].nameCamera);
+                            data.append('placement', '<?=$_REQUEST['PLACEMENT'];?>');
+                            data.append('id', <?=json_decode($_REQUEST['PLACEMENT_OPTIONS'], true)['ID']?>);
+
+                            axios({
+                                url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/startVideo.php',
+                                method: 'POST',
+                                data: data
+                            });
+
+                            this.record = false;
+                        }
+                    });
+
+
+                },
+                endRecord() {
+
+                    let ctx = this;
+
+                    const data = new FormData();
+                    data.append('portal', portal);
+                    data.append('camera_id', this.camera);
+                    data.append('placement', '<?=$_REQUEST['PLACEMENT'];?>');
+                    data.append('id', <?=json_decode($_REQUEST['PLACEMENT_OPTIONS'], true)['ID']?>);
+
+                    axios({
+                        url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/endVideo.php',
+                        method: 'POST',
+                        data: data
+                    }).then((response) => {
+                        ctx.getCurrentVideo();
+                    });
+
+                    this.record = true;
+
+                },
+                getCurrentVideo() {
+                    var ctx = this;
+
+                    const data = new FormData();
+                    data.append('portal', portal);
+                    data.append('placement', '<?=$_REQUEST['PLACEMENT'];?>');
+                    data.append('id', <?=json_decode($_REQUEST['PLACEMENT_OPTIONS'], true)['ID']?>);
+
+                    axios({
+                        url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/getCurrentVideo.php',
+                        method: 'POST',
+                        data: data
+                    }).then((response) => {
+                        //console.log(response)
+
+                        ctx.records = [];
+
+                        for (let item of response.data) {
+                            if(item.active == 'N') {
+                                ctx.records.push(item);
+                            } else {
+                                ctx.record = false
+                            }
+                        }
+
+                        if (ctx.records.length == 0) {
+                            ctx.recodrs_no = true;
+                        } else {
+                            ctx.recodrs_no = false;
+                        }
+
+                        setTimeout(function () {
+                            ctx.fuckingSizeWindow()
+                        }, 150)
+                        
+                    });
+                },
+                getDataPortal() {
+                    var ctx = this;
+
+                    const data = new FormData();
+                    data.append('portal', portal);
+
+                    axios({
+                        url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/portal.php',
+                        method: 'POST',
+                        data: data
+                    }).then((response) => {
+                        ctx.cameras = response.data
+                        setTimeout(function () {
+                            ctx.fuckingSizeWindow()
+                        }, 150)
+                    });
+                },
+                deleteRecord(id_record) {
+                    let ctx = this;
+
+                    const data = new FormData();
+                    data.append('id', id_record);
+
+                    axios({
+                        url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/deleteRecords.php',
+                        method: 'POST',
+                        data: data
+                    }).then((response) => {
+                        ctx.getCurrentVideo();
+                    });
+                },
                 fuckingSizeWindow() {
 
                     var body = document.body;
@@ -310,87 +483,23 @@
 
                     BX24.resizeWindow(width, document.body.offsetHeight)
                 },
-                newPortal() {
-                    var ctx = this;
-
-                    const data = new FormData();
-                    data.append('data', JSON.stringify(this.question_form));
-                    data.append('type', 'new');
-                    data.append('portal', portal);
-
-
-                    axios({
-                        url: 'https://b24apps.ru/local/b24apps/our_app/scripts_for_all_apps/workPortal/lead.php',
-                        method: 'POST',
-                        data: data
-                    }).then((response) => {
-                        ctx.modal = false
-                    });
-                },
                 getUser() {
                     var ctx = this;
 
                     BX24.callMethod('user.current', {}, function(res){
-
                         ctx.question_form.name = res.data().NAME;
                         ctx.question_form.phone = res.data().PERSONAL_MOBILE;
                         ctx.question_form.email = res.data().EMAIL;
-
-                        if (ctx.new_portal == 'new') {
-                            ctx.newPortal();
-                        }
-
                     });
                 }
             },
-            created(){
-                var ctx = this;
-
-                const data = new FormData();
-                data.append('portal', portal);
-
-                axios({
-                    url: 'https://b24apps.ru/local/b24apps/our_app/ipeye/php/portal.php',
-                    method: 'POST',
-                    data: data
-                }).then((response) => {
-
-                    if (response.data == 'new') {
-
-                        ctx.new_portal = 'new'
-
-                        BX24.callMethod('placement.bind', {
-                            PLACEMENT: 'CRM_DEAL_DETAIL_TAB',
-                            HANDLER: 'https://b24apps.ru/local/b24apps/our_app/ipeye/video.php',
-                            TITLE: 'Запись видео IPEYE',
-                            DESCRIPTION: 'Запись видео IPEYE'
-                        }, function (response) {});
-                        ctx.cameras = '';
-
-                    } else {
-                        ctx.cameras = response.data
-                    }
-
-                    ctx.getUser();
-
-                    setTimeout(function () {
-                        ctx.fuckingSizeWindow()
-                    }, 300)
-
-
-                });
-
+            created() {
+                this.getCurrentVideo();
+                this.getDataPortal();
+                this.getUser();
             }
         });
 
-
-
-        // BX24.callMethod('placement.unbind', {
-        //     PLACEMENT: 'CRM_DEAL_DETAIL_TAB',
-        //     HANDLER: 'https://b24apps.ru/local/b24apps/our_app/ipeye/video.php',
-        // }, function (response) {
-        //     console.log(response)
-        // });
 
 
     </script>
